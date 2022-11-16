@@ -1,9 +1,9 @@
 import * as S from "./styles"
 import {useEffect, useState} from "react";
 import api from "../../sevices/filmApi";
-import Select from "react-select/base";
+import Select, {SingleValue} from 'react-select';
 
-export default function SelectGenre() {
+export default function Genres() {
     const [genreState, setGenreState] = useState(
         [
             {
@@ -15,7 +15,7 @@ export default function SelectGenre() {
 
     useEffect(() => {
         api.get(
-            '/genre/movie/list?api_key=181911a338d5119b3964f38af18175e7&language=en-US'
+            `/genre/movie/list?api_key=${process.env.REACT_APP_API_KEY}`
         ).then((resp) => {
             let localGenreList = [];
             let data = resp.data.genres;
@@ -33,13 +33,13 @@ export default function SelectGenre() {
         });
     }, [setGenreState]);
 
-    // const changeStateByGenre = (e: SingleValue<{ label: string; value: number; }>) => {
-    //     console.log(e);
-    // };
+    const changeStateByGenre = (e: SingleValue<{ label: string; value: number; }>) => {
+        console.log(e);
+    };
 
     return (
         <>
-            <Select></Select>
+            <Select styles={S.customStyles} placeholder="Genre" options={genreState} onChange={changeStateByGenre}/>
         </>
     );
 }

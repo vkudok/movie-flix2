@@ -5,7 +5,7 @@ import {MovieType} from "../../common/types";
 import {MovieBoxLogo} from "../../assets";
 import MovieCard, {MovieDataType} from "../../components/MovieCard";
 import {NavLink} from "react-router-dom";
-import SelectGenre from "../../components/SelectGenre";
+import Genres from "../../components/Genres";
 
 export default function Home() {
     const page = 1;
@@ -13,8 +13,7 @@ export default function Home() {
 
     useEffect(() => {
         api.get(
-            // `/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
-            `/movie/popular?api_key=181911a338d5119b3964f38af18175e7&page=${page}`
+            `/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
         ).then((resp) => {
             const movieList = resp.data.results;
             setHomeState(movieList);
@@ -35,7 +34,7 @@ export default function Home() {
             <S.PageTitle>Movies</S.PageTitle>
 
             <S.Container>
-                <SelectGenre></SelectGenre>
+                <Genres></Genres>
             </S.Container>
 
             <S.MovieList>
