@@ -15,8 +15,10 @@ export default function Home() {
         api.get(
             `/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
         ).then((resp) => {
-            const movieList = resp.data.results;
-            setHomeState(movieList);
+            // const movieList = resp.data.results;
+            // setHomeState(movieList);
+
+
         });
     }, [setHomeState]);
 

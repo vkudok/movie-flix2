@@ -1,11 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import filterGenreSlice from "./reducers/genreSlice";
+import movieListSlice from "./reducers/movieListSlice";
 
 export const store = configureStore({
+    // reducer: {
+    //     movieList: movieListSlice,
+    // },
     reducer: {
-        filterGenre: filterGenreSlice,
+        movieList: movieListSlice,
     },
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+            thunk: {
+                extraArgument: { serviceApi }
+            },
+            serializableCheck: false,
+        })
 });
 
 export type RootState = ReturnType<typeof store.getState>;
