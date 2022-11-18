@@ -3,18 +3,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { MovieType } from "../../common/types";
 
 interface GenreState {
-    movieList: MovieType[];
+    movies: MovieType[];
 }
 
 const initialState: GenreState = {
-    movieList: [],
+    movies: [],
 };
 
 const setGlobalMovies = (
     state: GenreState,
-    action: PayloadAction<MovieType>
+    action: PayloadAction<MovieType[]>
 ) => {
-    state.movieList.push(action.payload);
+    console.log(action.payload);
+    state.movies = action.payload;
 };
 
 export const movieListSlice = createSlice({
