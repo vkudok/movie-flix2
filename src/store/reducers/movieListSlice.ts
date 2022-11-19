@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { MovieType } from "../../common/types";
+import {getMovies} from "../../api";
 
 interface GenreState {
     movies: MovieType[];
@@ -10,24 +11,17 @@ const initialState: GenreState = {
     movies: [],
 };
 
-const setGlobalMovies = (
-    state: GenreState,
-    action: PayloadAction<MovieType[]>
-) => {
-    console.log(action.payload);
-    state.movies = action.payload;
-};
-
 export const movieListSlice = createSlice({
-    name: "movieList",
+    name: 'movieList',
     initialState,
     reducers: {
-        setGlobalMovies
+//         setGlobalMovies
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getMovies.fulfilled, (state, action) => {
+            state.movies = action.payload;
+        })
     },
 });
 
-export const {
-    setGlobalMovies: setGlobalMovieList,
-} = movieListSlice.actions;
-
-export default movieListSlice.reducer;
+export default movieListSlice.reducer
