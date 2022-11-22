@@ -22,9 +22,9 @@ export default function MoviePage() {
         });
     }, [setMovieState]);
 
-    // console.log(trailerState);
+    console.log(movieState);
 
-    return(
+    return (
         <>
 
             <header>
@@ -39,10 +39,10 @@ export default function MoviePage() {
             {/*<S.PageTitle>{movieState?.original_title}</S.PageTitle>*/}
 
             <S.Main>
-                <S.BackdropPoster
-                    src={`https://image.tmdb.org/t/p/w500${movieState?.poster_path}`}
-                    alt={movieState?.original_title}
-                />
+                {/*<S.BackdropPoster*/}
+                {/*    src={`https://image.tmdb.org/t/p/w500${movieState?.poster_path}`}*/}
+                {/*    alt={movieState?.original_title}*/}
+                {/*/>*/}
 
                 <S.Details>
                     <S.MoviePoster
@@ -55,7 +55,7 @@ export default function MoviePage() {
                         <p>{movieState?.overview}</p>
 
                         <S.Rate>
-                            <AiFillStar size={24} />
+                            <AiFillStar size={24}/>
                             <span>{movieState?.vote_average}</span>
                         </S.Rate>
 
@@ -75,7 +75,7 @@ export default function MoviePage() {
                             <span>
                 Genres
                 <strong>
-                  {movieState?.genres.map(({ name }) => name).join(", ")}
+                  {movieState?.genres.map(({name}) => name).join(", ")}
                 </strong>
               </span>
                         </S.TechnicalDetails>

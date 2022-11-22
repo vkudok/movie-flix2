@@ -2,6 +2,10 @@ import * as S from "./styles"
 import {useEffect, useState} from "react";
 import api from "../../sevices/filmApi";
 import Select, {SingleValue} from 'react-select';
+import getMovieListByGenre from "./getMovieListByGenre";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../store";
+import {setMovies} from "../../store/reducers/movieListSlice";
 
 export default function Genres() {
     const [genreState, setGenreState] = useState(
@@ -13,6 +17,9 @@ export default function Genres() {
         ]
     );
 
+    const movieState  = useSelector((state: RootState) => state.movieList);
+
+    const dispatch = useDispatch<AppDispatch>();
     useEffect(() => {
         api.get(
             `/genre/movie/list?api_key=${process.env.REACT_APP_API_KEY}`
@@ -33,13 +40,13 @@ export default function Genres() {
         });
     }, [setGenreState]);
 
-    const changeStateByGenre = (e: SingleValue<{ label: string; value: number; }>) => {
-        console.log(e);
-    };
+    const onChangeFunction = (value: SingleValue<{ label: string; value: number; }>) => {
+        dispatch(setMovies(getMovieListByGenre(value, movieState.cacheMovies)));
+    }
 
     return (
         <>
-            <Select styles={S.customStyles} placeholder="Genre" options={genreState} onChange={changeStateByGenre}/>
+            <Select styles={S.customStyles} placeholder="Genre" options={genreState} onChange={onChangeFunction}/>
         </>
     );
 }

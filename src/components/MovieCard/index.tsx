@@ -5,7 +5,7 @@ import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 
 export type MovieDataType = Omit<
     MovieType,
-    "overview" | "release_date" | "runtime" | "genres"
+    "overview" | "release_date" | "runtime" | "genre_ids"
     >;
 
 export default function MovieCard(movieData: MovieDataType) {

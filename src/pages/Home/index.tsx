@@ -8,13 +8,10 @@ import {NavLink} from "react-router-dom";
 import Genres from "../../components/Genres";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../store";
-import {useAppSelector} from "../../store/useStore";
 import {getMovies} from "../../api";
-// import {setGlobalMovieList} from "../../store/reducers/movieListSlice";
 
 export default function Home() {
     const page = 1;
-    const [homeState, setHomeState] = useState<MovieType[]>();
 
     const dispatch = useDispatch<AppDispatch>();
 

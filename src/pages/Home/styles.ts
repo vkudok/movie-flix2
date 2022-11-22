@@ -48,6 +48,7 @@ export const Container = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 2rem auto;
+  gap: 15px;
 `;
 
 export const MovieList = styled.ul`

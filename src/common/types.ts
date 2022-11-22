@@ -6,9 +6,9 @@ export type MovieType = {
   vote_average: number;
   release_date: number;
   runtime: number;
-  genres: Array<{ id: number; name: string }>;
+  genre_ids: Array<number>;
 };
-//
+
 export type MoviePageType = {
   backdrop_path: string;
   budget: number;
