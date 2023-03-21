@@ -1,10 +1,12 @@
 import {configureStore} from "@reduxjs/toolkit";
 import movieListSlice from "./reducers/movieListSlice";
+import movieRecom from "./reducers/movieRecom";
 
 
 export const store = configureStore({
     reducer: {
-        movieList: movieListSlice
+        movieList: movieListSlice,
+        recommendation: movieRecom,
     }
 });
 

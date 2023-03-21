@@ -9,6 +9,12 @@ export type MovieType = {
   genre_ids: Array<number>;
 };
 
+export type MovieRecommendationType = {
+  title: string;
+  movie_id: number;
+  tmdbId: number;
+};
+
 export type MoviePageType = {
   backdrop_path: string;
   budget: number;

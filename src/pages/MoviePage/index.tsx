@@ -7,12 +7,25 @@ import input = Simulate.input;
 import api from "../../sevices/filmApi";
 import {MoviePageType, MovieType} from "../../common/types";
 import {AiFillStar} from "react-icons/ai";
+import {getRecommendation} from "../../api";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../store";
 
 export default function MoviePage() {
 
     const [movieState, setMovieState] = useState<MoviePageType>();
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    const tmdbId = parseInt(movieId);
+    const valueNumber = 4;
+
+
+    const movieRecom = useSelector((state: RootState) => state.recommendation);
+    console.log(movieRecom);
+
     useEffect(() => {
         api.get(
             // `/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
@@ -20,6 +33,7 @@ export default function MoviePage() {
         ).then((resp) => {
             setMovieState(resp.data);
         });
+        dispatch(getRecommendation({tmdbId, valueNumber}));
     }, [setMovieState]);
 
     console.log(movieState);
