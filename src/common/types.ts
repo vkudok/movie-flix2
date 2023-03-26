@@ -9,6 +9,11 @@ export type MovieType = {
   genre_ids: Array<number>;
 };
 
+export type MovieDataType = Omit<
+    MovieType,
+    "overview" | "release_date" | "runtime" | "genre_ids"
+    >;
+
 export type MovieRecommendationType = {
   title: string;
   movie_id: number;

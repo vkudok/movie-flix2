@@ -1,7 +1,7 @@
-import MovieCard, {MovieDataType} from "../MovieCard";
+import MovieCard from "../MovieCard";
 import {NavLink} from "react-router-dom";
 import * as S from "./styles";
-import {MovieType} from "../../common/types";
+import {MovieDataType, MovieType} from "../../common/types";
 
 export default function MovieList(props: {movies: MovieType[]}) {
     console.log(props.movies);

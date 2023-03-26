@@ -1,101 +1,106 @@
 import * as S from "./styles";
 import {MovieBoxLogo} from "../../assets";
-import {useEffect, useState} from "react";
-import {Simulate} from "react-dom/test-utils";
 import {NavLink, useLocation} from "react-router-dom"
-import input = Simulate.input;
-import api from "../../sevices/filmApi";
-import {MoviePageType, MovieType} from "../../common/types";
+import {useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
-import {getRecommendation} from "../../api";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../../store";
+import {fetchMovie, findMovieIdByTmdbId, getRecommendation, MovieInfo} from "../../movies/api";
+import RecomList from "../../components/RecomList";
 
 export default function MoviePage() {
 
-    const [movieState, setMovieState] = useState<MoviePageType>();
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
 
-    const dispatch = useDispatch<AppDispatch>();
+    const movieCard = useQuery(["movie", movieId], () =>
+        fetchMovie(Number(movieId))
+    );
+
+    let movieInfo: MovieInfo | undefined;
+    if (movieCard.data) {
+        let genreList = '';
+        movieCard.data.genres.forEach((item, index) => {
+            let delimeter = '|';
+            if (index === movieCard.data.genres.length - 1) {
+                delimeter = '';
+            }
+            genreList = genreList + item.name + delimeter;
+        });
+        movieInfo = {
+            movieInfo: [
+                {
+                    name: movieCard.data.original_title,
+                    genre: genreList,
+                    tmdbId: movieCard.data.id
+                }
+            ]
+        }
+    }
+    const movieLensList = useQuery(["movieInfo", movieInfo], () =>
+        findMovieIdByTmdbId(movieInfo), {enabled: !!movieInfo}
+    );
 
     const tmdbId = parseInt(movieId);
     const valueNumber = 4;
 
-
-    const movieRecom = useSelector((state: RootState) => state.recommendation);
-    console.log(movieRecom);
-
-    useEffect(() => {
-        api.get(
-            // `/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
-            `/movie/${movieId}?api_key=181911a338d5119b3964f38af18175e7`
-        ).then((resp) => {
-            setMovieState(resp.data);
-        });
-        dispatch(getRecommendation({tmdbId, valueNumber}));
-    }, [setMovieState]);
-
-    console.log(movieState);
-
-    return (
-        <>
-
-            <header>
-                <nav>
-                    <NavLink to={"/"}>
-                        <MovieBoxLogo/>
-                    </NavLink>
-                </nav>
-            </header>
-
-
-            {/*<S.PageTitle>{movieState?.original_title}</S.PageTitle>*/}
-
-            <S.Main>
-                {/*<S.BackdropPoster*/}
-                {/*    src={`https://image.tmdb.org/t/p/w500${movieState?.poster_path}`}*/}
-                {/*    alt={movieState?.original_title}*/}
-                {/*/>*/}
-
-                <S.Details>
-                    <S.MoviePoster
-                        src={`https://image.tmdb.org/t/p/w500${movieState?.poster_path}`}
-                        alt={movieState?.original_title}
-                    />
-
-                    <div>
-                        <h4>{movieState?.original_title}</h4>
-                        <p>{movieState?.overview}</p>
-
-                        <S.Rate>
-                            <AiFillStar size={24}/>
-                            <span>{movieState?.vote_average}</span>
-                        </S.Rate>
-
-                        <S.TechnicalDetails>
-              <span>
-                Type
-                <strong>Movie</strong>
-              </span>
-                            <span>
-                Release Date
-                <strong>{movieState?.release_date}</strong>
-              </span>
-                            <span>
-                Run Time
-                <strong>{movieState?.runtime} mins</strong>
-              </span>
-                            <span>
-                Genres
-                <strong>
-                  {movieState?.genres.map(({name}) => name).join(", ")}
-                </strong>
-              </span>
-                        </S.TechnicalDetails>
-                    </div>
-                </S.Details>
-            </S.Main>
-        </>
+    const recommendation = useQuery(
+        ["recommendation", tmdbId, valueNumber],
+        () => getRecommendation(tmdbId, valueNumber),
+        {
+            enabled: !!movieLensList
+        }
     );
+
+    if (movieCard.status === "success" && movieCard.data) {
+        return (
+            <>
+
+                <header>
+                    <nav>
+                        <NavLink to={"/"}>
+                            <MovieBoxLogo/>
+                        </NavLink>
+                    </nav>
+                </header>
+                <S.Main>
+                    <S.Details>
+                        <S.MoviePoster
+                            src={`https://image.tmdb.org/t/p/w500${movieCard.data?.poster_path}`}
+                            alt={movieCard.data?.original_title}
+                        />
+                        <div>
+                            <h4>{movieCard.data?.original_title}</h4>
+                            <p>{movieCard.data?.overview}</p>
+                            <S.Rate>
+                                <AiFillStar size={24}/>
+                                <span>{movieCard.data?.vote_average}</span>
+                            </S.Rate>
+                            <S.TechnicalDetails>
+                                  <span>
+                                    Type
+                                    <strong>Movie</strong>
+                                  </span>
+                                                    <span>
+                                    Release Date
+                                    <strong>{movieCard.data?.release_date}</strong>
+                                  </span>
+                                                    <span>
+                                    Run Time
+                                    <strong>{movieCard.data?.runtime} mins</strong>
+                                  </span>
+                                                    <span>
+                                    Genres
+                                    <strong>
+                                      {movieCard.data?.genres.map(({name}) => name).join(", ")}
+                                    </strong>
+                                  </span>
+                            </S.TechnicalDetails>
+                        </div>
+                    </S.Details>
+                </S.Main>
+                <h4>Вам должно понравиться:</h4>
+                {recommendation.data && <RecomList data={recommendation.data}></RecomList>}
+            </>
+        );
+    }
+    return null;
 }

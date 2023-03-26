@@ -1,8 +1,6 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import * as S from "./styles";
-import api from "../../sevices/filmApi";
 import {MovieBoxLogo} from "../../assets";
-import MovieCard, {MovieDataType} from "../../components/MovieCard";
 import {NavLink} from "react-router-dom";
 import Genres from "../../components/Genres";
 import {useDispatch, useSelector} from "react-redux";
@@ -31,8 +29,6 @@ export default function Home() {
                     <S.Link to="/favorites">Favorites</S.Link>
                 </nav>
             </header>
-
-            {/*<S.PageTitle>Movies</S.PageTitle>*/}
 
             <S.Container>
                 <Genres></Genres>
