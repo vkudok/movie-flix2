@@ -85,20 +85,20 @@ export const getRecommendationEndpoint = async <T>(
   throw new Error("Something went wrong");
 };
 
-// export interface Paginated<T> {
-//   page: number;
-//   results: T[];
-//   total_pages: number;
-//   total_results: number;
-// }
-//
-// export const fetchPaginated = <T>(
-//   endpoint: string,
-//   page: number,
-//   args: Arg[] = []
-// ) => {
-//   return fetchEndpoint<Paginated<T>>(endpoint, [
-//     ...args,
-//     { key: "page", value: page },
-//   ]);
-// };
+export interface Paginated<T> {
+  page: number;
+  results: T[];
+  total_pages: number;
+  total_results: number;
+}
+
+export const fetchPaginated = <T>(
+  endpoint: string,
+  page: number,
+  args: Arg[] = []
+) => {
+  return fetchEndpoint<Paginated<T>>(endpoint, [
+    ...args,
+    { key: "page", value: page },
+  ]);
+};

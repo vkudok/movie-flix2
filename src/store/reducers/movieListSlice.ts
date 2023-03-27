@@ -1,13 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-import { MovieType } from "../../common/types";
 import {getPopularMovies} from "../../api";
 import {MovieState} from "../../common/interface";
+import {MovieListResult} from "../../movies/api";
 
-// interface MovieState {
-//     movies: MovieType[];
-//     cacheMovies: MovieType[];
-// }
 
 const initialState: MovieState = {
     movies: [],
@@ -16,7 +11,7 @@ const initialState: MovieState = {
 
 const setGlobalMovies = (
     state: MovieState,
-    action: PayloadAction<MovieType[]>
+    action: PayloadAction<MovieListResult[]>
 ) => {
     state.movies = action.payload;
 };

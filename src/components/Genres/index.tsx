@@ -1,13 +1,15 @@
 import * as S from "./styles"
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import api from "../../sevices/filmApi";
 import Select, {SingleValue} from 'react-select';
-import getMovieListByGenre from "./getMovieListByGenre";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../store";
-import {setMovies} from "../../store/reducers/movieListSlice";
+import {MovieListResult} from "../../movies/api";
+import {MoviesContext} from "../../pages/Home";
 
-export default function Genres() {
+export default function Genres(props: {movies: MovieListResult[]}) {
+    const {movies, setMovies} = useContext(MoviesContext);
+    console.log(movies);
     const [genreState, setGenreState] = useState(
         [
             {
@@ -41,7 +43,7 @@ export default function Genres() {
     }, [setGenreState]);
 
     const onChangeFunction = (value: SingleValue<{ label: string; value: number; }>) => {
-        dispatch(setMovies(getMovieListByGenre(value, movieState.cacheMovies)));
+        // dispatch(setMovies(getMovieListByGenre(value, props.movies)));
     }
 
     return (

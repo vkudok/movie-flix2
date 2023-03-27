@@ -1,26 +1,25 @@
-import {useEffect} from "react";
+import {createContext, useState} from "react";
 import * as S from "./styles";
 import {MovieBoxLogo} from "../../assets";
 import {NavLink} from "react-router-dom";
 import Genres from "../../components/Genres";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../../store";
-import {getPopularMovies} from "../../api";
 import MovieList from "../../components/MovieList";
+import {useQuery} from "react-query";
+import {fetchMovies} from "../../movies/api";
+
+export const MoviesContext = createContext();
 
 export default function Home() {
     const page = 1;
+    const endpoint = "movie/popular";
 
-    const dispatch = useDispatch<AppDispatch>();
-
-    const stateMovies = useSelector((state: RootState) => state.movieList)
-
-    useEffect(() => {
-        dispatch(getPopularMovies({page}))
-    }, [])
+    const moviesQuery = useQuery(["movie", endpoint, page], () =>
+        fetchMovies(endpoint, page)
+    );
+    const [movies, setMovies] = useState(moviesQuery.data);
 
     return (
-        <>
+        <MoviesContext.Provider value={{movies, setMovies}}>
             <header>
                 <nav>
                     <NavLink to={"/"}>
@@ -29,12 +28,10 @@ export default function Home() {
                     <S.Link to="/favorites">Favorites</S.Link>
                 </nav>
             </header>
-
             <S.Container>
-                <Genres></Genres>
+                {(movies && movies.results) && <Genres movies={movies?.results}></Genres>}
             </S.Container>
-
-            <MovieList movies={stateMovies.movies}></MovieList>
-        </>
+            {(movies && movies.results) && <MovieList movies={movies?.results}></MovieList>}
+        </MoviesContext.Provider>
     );
 }

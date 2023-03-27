@@ -1,4 +1,4 @@
-import {fetchEndpoint, findMovieEndpoint, getRecommendationEndpoint} from "../common/api";
+import {fetchEndpoint, fetchPaginated, findMovieEndpoint, getRecommendationEndpoint} from "../common/api";
 
 export interface Genre {
   id: number;
@@ -82,23 +82,23 @@ export const getRecommendation = (tmdbId: number, valueNumber: number) => {
   return getRecommendationEndpoint<RecommendationInfoType>(tmdbId, valueNumber);
 };
 
-// export interface MovieListResult {
-//   adult: boolean;
-//   backdrop_path: string | null;
-//   id: number;
-//   video: boolean;
-//   genre_ids: number[];
-//   original_language: string;
-//   original_title: string;
-//   overview: string | null;
-//   popularity: number;
-//   poster_path: string | null;
-//   release_date: string;
-//   title: string;
-//   vote_average: number;
-//   vote_count: number;
-// }
-//
-// export const fetchMovies = (endpoint: string, page: number) => {
-//   return fetchPaginated<MovieListResult>(endpoint, page);
-// };
+export interface MovieListResult {
+  adult: boolean;
+  backdrop_path: string | null;
+  id: number;
+  video: boolean;
+  genre_ids: number[];
+  original_language: string;
+  original_title: string;
+  overview: string | null;
+  popularity: number;
+  poster_path: string;
+  release_date: string;
+  title: string;
+  vote_average: number;
+  vote_count: number;
+}
+
+export const fetchMovies = (endpoint: string, page: number) => {
+  return fetchPaginated<MovieListResult>(endpoint, page);
+};

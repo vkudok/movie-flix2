@@ -97,7 +97,6 @@ export default function MoviePage() {
                         </div>
                     </S.Details>
                 </S.Main>
-                <h4>Вам должно понравиться:</h4>
                 {recommendation.data && <RecomList data={recommendation.data}></RecomList>}
             </>
         );
