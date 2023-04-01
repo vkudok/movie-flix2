@@ -11,11 +11,9 @@ import Rating from '@mui/material/Rating';
 export default function MoviePage() {
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
-
     const movieCardResult = useQuery(["movie", movieId], () =>
         fetchMovie(Number(movieId))
     );
-
     let movieInfo: MovieInfo | undefined;
     if (movieCardResult.data) {
         let genreList = '';
@@ -36,31 +34,19 @@ export default function MoviePage() {
             ]
         }
     }
-
     const [value, setValue] = useState<number>(0);
-
-    const tmdbId = parseInt(movieId);
-    const valueNumber = 4;
-
     const movieLensListResult = useQuery(["movieInfo", movieInfo], () =>
             findMovieIdByTmdbId(movieInfo),
         {enabled: !!movieInfo}
     );
-    const [movieRating, setMovieRating] = useState<MovieRating>({
-        userId: 0,
-        movieId: 0,
-        rating: 0,
-        timestamp: ''
-    } as MovieRating)
-
+    const tmdbId = parseInt(movieId);
+    const valueNumber = 4;
     const recommendationResult = useQuery(["recommendation", tmdbId, valueNumber],() =>
             getRecommendation(tmdbId, valueNumber)
     );
-
     const movieRatingResult = useMutation("movieRating", (movieRating: MovieRating) =>
         setRating(movieRating)
     );
-
     if (movieCardResult.status === "success" && movieCardResult.data) {
         return (
             <>
@@ -85,25 +71,24 @@ export default function MoviePage() {
                                 <AiFillStar size={24}/>
                                 <span>{movieCardResult.data?.vote_average / 2}</span>
                             </S.Rate>
-                            <S.Stars>
-                                {movieLensListResult.data &&
+                            {movieLensListResult.data &&
+                                <S.Stars>
                                     <Rating value={value}
-                                        onChange={(event, newValue) => {
-                                            if (newValue === null){
-                                                newValue = 0;
-                                            }
-                                            setValue(newValue);
-                                            setMovieRating({
-                                                userId: 1,
-                                                movieId: movieLensListResult.data[0],
-                                                rating: newValue,
-                                                timestamp: Date.now().toString()
-                                            });
-                                            movieRatingResult.mutateAsync(movieRating)
-                                        }}
-                                        size="large" />
-                                }
-                            </S.Stars>
+                                            onChange={(event, newValue) => {
+                                                if (newValue === null) {
+                                                    newValue = 0;
+                                                }
+                                                setValue(newValue);
+                                                movieRatingResult.mutateAsync({
+                                                    userId: 1,
+                                                    movieId: movieLensListResult.data[0],
+                                                    rating: newValue,
+                                                    timestamp: Date.now().toString()
+                                                })
+                                            }}
+                                            size="large"/>
+                                </S.Stars>
+                            }
                             <S.TechnicalDetails>
                                   <span>
                                     Type
