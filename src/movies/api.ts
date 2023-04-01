@@ -1,4 +1,10 @@
-import {fetchEndpoint, fetchPaginated, findMovieEndpoint, getRecommendationEndpoint} from "../common/api";
+import {
+  fetchEndpoint,
+  fetchPaginated,
+  findMovieEndpoint,
+  getRecommendationEndpoint,
+  setRatingEndpoint
+} from "../common/api";
 
 export interface Genre {
   id: number;
@@ -66,21 +72,16 @@ export interface RecommendationType{
   tmdbId: number;
 }
 
+export interface MovieRating{
+  userId: number,
+  movieId: number,
+  rating: number,
+  timestamp: string
+}
+
 export interface MovieInfo {
   movieInfo: MovieInfoType[];
 }
-
-export const fetchMovie = (movieId: number) => {
-  return fetchEndpoint<Movie>(`movie/${movieId}`);
-};
-
-export const findMovieIdByTmdbId = (movieInfo: MovieInfo | undefined) => {
-  return findMovieEndpoint<number[]>(movieInfo );
-};
-
-export const getRecommendation = (tmdbId: number, valueNumber: number) => {
-  return getRecommendationEndpoint<RecommendationInfoType>(tmdbId, valueNumber);
-};
 
 export interface MovieListResult {
   adult: boolean;
@@ -101,4 +102,20 @@ export interface MovieListResult {
 
 export const fetchMovies = (endpoint: string, page: number) => {
   return fetchPaginated<MovieListResult>(endpoint, page);
+};
+
+export const fetchMovie = (movieId: number) => {
+  return fetchEndpoint<Movie>(`movie/${movieId}`);
+};
+
+export const findMovieIdByTmdbId = (movieInfo: MovieInfo | undefined) => {
+  return findMovieEndpoint<number[]>(movieInfo );
+};
+
+export const getRecommendation = (tmdbId: number, valueNumber: number) => {
+  return getRecommendationEndpoint<RecommendationInfoType>(tmdbId, valueNumber);
+};
+
+export const setRating = (movieRating: MovieRating | undefined) => {
+  return setRatingEndpoint<string>(movieRating);
 };

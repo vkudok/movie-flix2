@@ -8,8 +8,8 @@ import {MovieListResult} from "../../movies/api";
 import {MoviesContext} from "../../pages/Home";
 
 export default function Genres(props: {movies: MovieListResult[]}) {
-    const {movies, setMovies} = useContext(MoviesContext);
-    console.log(movies);
+    // const {movies, setMovies} = useContext(MoviesContext);
+    // console.log(movies);
     const [genreState, setGenreState] = useState(
         [
             {

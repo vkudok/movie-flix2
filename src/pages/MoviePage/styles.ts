@@ -55,7 +55,6 @@ export const Details = styled.div`
     gap: 4rem;
 
     div {
-      padding: 2rem;
       max-width: 70rem;
     }
   }
@@ -85,10 +84,18 @@ export const Rate = styled.div`
   }
 `;
 
+export const Stars = styled.div`
+  margin: 1rem 0;
+  svg {
+    color: var(--warning);
+  }
+`;
+
 export const TechnicalDetails = styled.div`
   display: flex;
   flex-direction: column;
 
+  margin: 1rem 0;
   span {
     &:not(:first-child) {
       margin: 2rem 0;

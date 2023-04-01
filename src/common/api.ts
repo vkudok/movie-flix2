@@ -1,4 +1,4 @@
-import {MovieInfo} from "../movies/api";
+import {MovieInfo, MovieRating} from "../movies/api";
 
 interface Arg {
   key: string;
@@ -83,6 +83,32 @@ export const getRecommendationEndpoint = async <T>(
     );
   }
   throw new Error("Something went wrong");
+};
+
+export const setRatingEndpoint = async <T>(
+    movieRating: MovieRating | undefined
+): Promise<T> => {
+    const response = await fetch(
+        `http://127.0.0.1:8000/setMovieRating`,
+        {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(movieRating)
+        }
+    );
+    const jsonResponse = await response.json();
+    if (response.ok) {
+        return jsonResponse;
+    }
+    if ("status_code" in jsonResponse && "status_message" in jsonResponse) {
+        throw new Error(
+            `${jsonResponse.status_code}: ${jsonResponse.status_message}`
+        );
+    }
+    throw new Error("Something went wrong");
 };
 
 export interface Paginated<T> {

@@ -3,11 +3,12 @@ import {MovieBoxLogo} from "../../assets";
 import {NavLink, useLocation} from "react-router-dom"
 import {useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
-import {fetchMovie, findMovieIdByTmdbId, getRecommendation, MovieInfo} from "../../movies/api";
+import {fetchMovie, findMovieIdByTmdbId, getRecommendation, MovieInfo, MovieRating, setRating} from "../../movies/api";
 import RecomList from "../../components/RecomList";
+import React, {useEffect, useState} from "react";
+import Rating from '@mui/material/Rating';
 
 export default function MoviePage() {
-
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
 
@@ -36,7 +37,7 @@ export default function MoviePage() {
         }
     }
     const movieLensList = useQuery(["movieInfo", movieInfo], () =>
-        findMovieIdByTmdbId(movieInfo), {enabled: !!movieInfo}
+        findMovieIdByTmdbId(movieInfo), {enabled: !(movieInfo === undefined)}
     );
 
     const tmdbId = parseInt(movieId);
@@ -44,11 +45,28 @@ export default function MoviePage() {
 
     const recommendation = useQuery(
         ["recommendation", tmdbId, valueNumber],
-        () => getRecommendation(tmdbId, valueNumber),
-        {
-            enabled: !!movieLensList
-        }
+        () => getRecommendation(tmdbId, valueNumber)
     );
+
+    const [value, setValue] = useState<number | null>(0);
+
+    let movieRatingData: MovieRating | undefined;
+    if(movieLensList.data ) {
+        movieRatingData = {
+            userId: 1,
+            movieId: movieLensList.data[0],
+            rating: value!,
+            timestamp: Date.now().toString()
+        }
+        console.log(movieRatingData);
+    }
+
+    const movieRating = useQuery(["movieRating", movieRatingData], () =>
+        setRating(movieRatingData), {enabled: !!(movieRatingData)}
+    );
+    //
+    console.log(movieLensList);
+    console.log(movieRating);
 
     if (movieCard.status === "success" && movieCard.data) {
         return (
@@ -72,8 +90,15 @@ export default function MoviePage() {
                             <p>{movieCard.data?.overview}</p>
                             <S.Rate>
                                 <AiFillStar size={24}/>
-                                <span>{movieCard.data?.vote_average}</span>
+                                <span>{movieCard.data?.vote_average / 2}</span>
                             </S.Rate>
+                            <S.Stars>
+                                <Rating value={value}
+                                        onChange={(event, newValue) => {
+                                            setValue(newValue);
+                                        }}
+                                        size="large" />
+                            </S.Stars>
                             <S.TechnicalDetails>
                                   <span>
                                     Type
