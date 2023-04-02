@@ -1,7 +1,7 @@
 import {NavLink} from "react-router-dom";
 import * as S from "./styles";
 import {RecommendationInfoType} from "../../movies/api";
-import MovieCardRequest from "../MovieCardRequest";
+import MovieCardRequest from "../MovieCard/MovieCardRequest";
 import React from "react";
 
 export default function RecomList(props: {data: RecommendationInfoType}) {

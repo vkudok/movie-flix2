@@ -4,6 +4,9 @@ export const CenterBlock = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    iframe{
+        background-color: black;
+    }
 `;
 
 export const Title = styled.h4`

@@ -1,4 +1,4 @@
-import MovieCard from "../MovieCard";
+import MovieCard from "../MovieCard/MovieCard";
 import {NavLink} from "react-router-dom";
 import * as S from "./styles";
 import {MovieDataType, MovieType} from "../../common/types";
