@@ -7,7 +7,6 @@ export default function MovieCard(movieData: MovieDataType) {
             <S.Card>
                 <img src={`https://image.tmdb.org/t/p/w500`+ movieData.poster_path} alt={movieData.original_title}/>
                 <S.Title>{movieData.original_title}</S.Title>
-                <S.Vote>{movieData.vote_average / 2}</S.Vote>
             </S.Card>
         </>);
 }
