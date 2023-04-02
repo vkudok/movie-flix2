@@ -8,6 +8,7 @@ import React, {useState} from "react";
 import Rating from '@mui/material/Rating';
 import Header from "../../components/Header";
 import {useAuth0} from "@auth0/auth0-react";
+import {StyledTooltip} from "./muiStyles";
 
 export default function MoviePage() {
     const href = useLocation();
@@ -49,7 +50,9 @@ export default function MoviePage() {
         setRating(movieRating)
     );
     const { user, isAuthenticated } = useAuth0();
-    console.log(user?.sub);
+    console.log(user);
+    console.log(!!user);
+    console.log(isAuthenticated);
     if (movieCardResult.status === "success" && movieCardResult.data) {
         return (
             <>
@@ -69,20 +72,29 @@ export default function MoviePage() {
                             </S.Rate>
                             {movieLensListResult.data &&
                                 <S.Stars>
-                                    <Rating value={value}
-                                            onChange={(event, newValue) => {
-                                                if (newValue === null) {
-                                                    newValue = 0;
-                                                }
-                                                setValue(newValue);
-                                                movieRatingResult.mutateAsync({
-                                                    userId: 1,
-                                                    movieId: movieLensListResult.data[0],
-                                                    rating: newValue,
-                                                    timestamp: Date.now().toString()
-                                                })
-                                            }}
-                                            size="large"/>
+                                    <StyledTooltip title={isAuthenticated ? 'Rate the movie' : 'Log in to rate movie'} placement="bottom">
+                                         <span>
+                                            <Rating
+                                                value={value}
+                                                // placeholder={isAuthenticated ? 'Rate the movie' : 'Log in to rate movie'}
+                                                disabled={!isAuthenticated && (!user)}
+                                                onChange={(event, newValue) => {
+                                                    if (newValue === null) {
+                                                        newValue = 0;
+                                                    }
+                                                    const userId = user!.sub!.split('|');
+                                                    setValue(newValue);
+                                                    movieRatingResult.mutateAsync({
+                                                        userId: userId[1],
+                                                        movieId: movieLensListResult.data[0],
+                                                        rating: newValue,
+                                                        timestamp: Date.now().toString()
+                                                    })
+                                                }}
+                                                size="large"
+                                            />
+                                         </span>
+                                    </StyledTooltip>
                                 </S.Stars>
                             }
                             <S.TechnicalDetails>

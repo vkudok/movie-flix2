@@ -8,7 +8,7 @@ const LoginButton = () => {
     return (
         <Button onClick={() => loginWithRedirect()}
                 variant="contained"
-                size="large"
+                style={{fontSize: '14px', fontWeight: '200', color: 'white'}}
         >
             Log In
         </Button>

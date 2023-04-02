@@ -73,7 +73,7 @@ export interface RecommendationType{
 }
 
 export interface MovieRating{
-  userId: number,
+  userId: string,
   movieId: number,
   rating: number,
   timestamp: string

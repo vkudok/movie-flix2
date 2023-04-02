@@ -6,9 +6,10 @@ const LogoutButton = () => {
     const { logout } = useAuth0();
 
     return (
-        <Button onClick={() => logout()}
-                variant="outlined"
-                size="large"
+        <Button
+            variant="outlined"
+            style={{fontSize: '14px', fontWeight: '200', color: 'white'}}
+            onClick={() => logout()}
         >
             Log out
         </Button>

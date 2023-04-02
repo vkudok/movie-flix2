@@ -1,1 +1,1 @@
-export { ReactComponent as MovieBoxLogo } from './logo.svg';
+export { ReactComponent as MovieBoxLogo } from './logo1.svg';
