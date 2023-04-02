@@ -1,9 +1,6 @@
-import {createContext, useState} from "react";
-import * as S from "./styles";
-import {MovieBoxLogo} from "../../assets";
-import {NavLink} from "react-router-dom";
-import Genres from "../../components/Genres";
+import {createContext} from "react";
 import MovieList from "../../components/MovieList";
+import Header from "../../components/Header";
 import {useQuery} from "react-query";
 import {fetchMovies} from "../../movies/api";
 
@@ -21,14 +18,7 @@ export default function Home() {
     return (
         // <MoviesContext.Provider value={{movies, setMovies}}>
         <>
-            <header>
-                <nav>
-                    <NavLink to={"/"}>
-                        <MovieBoxLogo/>
-                    </NavLink>
-                    <S.Link to="/favorites">Favorites</S.Link>
-                </nav>
-            </header>
+            <Header></Header>
             {/*<S.Container>*/}
             {/*    {(movies && movies.results) && <Genres movies={movies?.results}></Genres>}*/}
             {/*</S.Container>*/}

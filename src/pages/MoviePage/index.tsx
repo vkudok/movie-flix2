@@ -1,12 +1,13 @@
 import * as S from "./styles";
-import {MovieBoxLogo} from "../../assets";
-import {NavLink, useLocation} from "react-router-dom"
+import {useLocation} from "react-router-dom"
 import {useMutation, useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
 import {fetchMovie, findMovieIdByTmdbId, getRecommendation, MovieInfo, MovieRating, setRating} from "../../movies/api";
 import RecomList from "../../components/RecomList";
 import React, {useState} from "react";
 import Rating from '@mui/material/Rating';
+import Header from "../../components/Header";
+import {useAuth0} from "@auth0/auth0-react";
 
 export default function MoviePage() {
     const href = useLocation();
@@ -47,17 +48,12 @@ export default function MoviePage() {
     const movieRatingResult = useMutation("movieRating", (movieRating: MovieRating) =>
         setRating(movieRating)
     );
+    const { user, isAuthenticated } = useAuth0();
+    console.log(user?.sub);
     if (movieCardResult.status === "success" && movieCardResult.data) {
         return (
             <>
-
-                <header>
-                    <nav>
-                        <NavLink to={"/"}>
-                            <MovieBoxLogo/>
-                        </NavLink>
-                    </nav>
-                </header>
+                <Header></Header>
                 <S.Main>
                     <S.Details>
                         <S.MoviePoster
