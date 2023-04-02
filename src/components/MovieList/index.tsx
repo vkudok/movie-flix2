@@ -5,8 +5,7 @@ import {MovieDataType, MovieType} from "../../common/types";
 import {MovieListResult} from "../../movies/api";
 
 export default function MovieList(props: {movies: MovieListResult[]}) {
-    console.log(props.movies);
-    return (
+     return (
         <>
             <S.MovieList>
                 {

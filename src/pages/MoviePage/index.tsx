@@ -2,20 +2,43 @@ import * as S from "./styles";
 import {useLocation} from "react-router-dom"
 import {useMutation, useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
-import {fetchMovie, findMovieIdByTmdbId, getRecommendation, MovieInfo, MovieRating, setRating} from "../../movies/api";
+import {
+    fetchMovie,
+    fetchMovies, fetchMovieVideo,
+    findMovieIdByTmdbId,
+    getRecommendation,
+    MovieInfo,
+    MovieRating,
+    setRating
+} from "../../movies/api";
 import RecomList from "../../components/RecomList";
 import React, {useState} from "react";
 import Rating from '@mui/material/Rating';
 import Header from "../../components/Header";
 import {useAuth0} from "@auth0/auth0-react";
 import {StyledTooltip} from "./muiStyles";
+import Video from "../../components/Video/Video";
 
 export default function MoviePage() {
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
-    const movieCardResult = useQuery(["movie", movieId], () =>
-        fetchMovie(Number(movieId))
+    const endpointMovieCard = `movie/${movieId}`;
+    const endpointMovieVideo = `/movie/${movieId}/videos`;
+    const movieCardResult = useQuery(["movieCard", endpointMovieCard], () =>
+        fetchMovie(endpointMovieCard)
     );
+    const movieVideoResult = useQuery(["movieVideo", endpointMovieVideo], () =>
+        fetchMovieVideo(endpointMovieVideo)
+    );
+    let youtubeLink = '';
+    if(movieVideoResult.data && movieVideoResult.data?.results){
+        movieVideoResult.data?.results.forEach(item=>{
+            if(item.type === 'Trailer'){
+                youtubeLink = `https://www.youtube.com/embed/${item.key}?showinfo=0`;
+            }
+        });
+    }
+    console.log(youtubeLink);
     let movieInfo: MovieInfo | undefined;
     if (movieCardResult.data) {
         let genreList = '';
@@ -50,9 +73,7 @@ export default function MoviePage() {
         setRating(movieRating)
     );
     const { user, isAuthenticated } = useAuth0();
-    console.log(user);
-    console.log(!!user);
-    console.log(isAuthenticated);
+
     if (movieCardResult.status === "success" && movieCardResult.data) {
         return (
             <>
@@ -76,7 +97,6 @@ export default function MoviePage() {
                                          <span>
                                             <Rating
                                                 value={value}
-                                                // placeholder={isAuthenticated ? 'Rate the movie' : 'Log in to rate movie'}
                                                 disabled={!isAuthenticated && (!user)}
                                                 onChange={(event, newValue) => {
                                                     if (newValue === null) {
@@ -120,6 +140,9 @@ export default function MoviePage() {
                         </div>
                     </S.Details>
                 </S.Main>
+                {youtubeLink !== '' &&
+                    <Video link={youtubeLink}></Video>
+                }
                 {recommendationResult.data && <RecomList data={recommendationResult.data}></RecomList>}
             </>
         );

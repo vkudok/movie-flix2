@@ -4,8 +4,9 @@ import {fetchMovie} from "../../movies/api";
 
 export default function MovieCardRequest(props: { tmdbId: number }) {
     const tmdbId = props.tmdbId;
-    const movieCard = useQuery(["movie", tmdbId], () =>
-        fetchMovie(tmdbId)
+    const endpointMovieCard = `movie/${tmdbId}`;
+    const movieCard = useQuery(["movie", endpointMovieCard], () =>
+        fetchMovie(endpointMovieCard)
     );
     if (movieCard.data) {
         return (

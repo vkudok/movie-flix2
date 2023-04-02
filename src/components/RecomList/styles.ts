@@ -4,7 +4,6 @@ export const MovieList = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 2rem auto;
 
   li {
     list-style-type: none;
@@ -20,4 +19,18 @@ export const MovieList = styled.ul`
   @media (min-width: 768px) {
     display: flex;
   }
+`;
+
+
+export const CenterBlock = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem auto;
+`;
+
+export const Title = styled.h4`
+    font-size: 2.4rem;
+    color: var(--gray-50);
+    margin: 10px;
 `;
