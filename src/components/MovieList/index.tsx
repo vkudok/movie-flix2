@@ -3,8 +3,10 @@ import {NavLink} from "react-router-dom";
 import * as S from "./styles";
 import {MovieDataType, MovieType} from "../../common/types";
 import {MovieListResult} from "../../movies/api";
+import {useState} from "react";
 
 export default function MovieList(props: {movies: MovieListResult[]}) {
+
      return (
         <>
             <S.MovieList>

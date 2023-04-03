@@ -3,8 +3,7 @@ import {useLocation} from "react-router-dom"
 import {useMutation, useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
 import {
-    fetchMovie,
-    fetchMovies, fetchMovieVideo,
+    fetchMovie, fetchMovieVideo,
     findMovieIdByTmdbId, GeneralMoviePageInfo,
     getRecommendation, getUserRating,
     MovieInfo,
