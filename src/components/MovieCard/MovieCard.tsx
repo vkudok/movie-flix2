@@ -1,5 +1,5 @@
 import * as S from "./styles";
-import {MovieDataType} from "../../common/types";
+import {MovieDataType} from "../../interfaces/interfaces";
 
 export default function MovieCard(movieData: MovieDataType) {
     return (

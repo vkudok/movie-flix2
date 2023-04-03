@@ -1,9 +1,9 @@
 import {createContext, useState} from "react";
-import MovieList from "../../components/MovieList";
-import Header from "../../components/Header";
+import MovieList from "../../components/MovieList/MovieList";
+import Header from "../../components/Header/Header";
 import {useQuery} from "react-query";
-import {fetchMovies} from "../../movies/api";
 import * as S from "./styles";
+import {fetchMovies} from "../../services/servicesConst";
 
 export const MoviesContext = createContext({});
 

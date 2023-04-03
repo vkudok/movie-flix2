@@ -1,15 +1,11 @@
-import {
-    fetchEndpoint,
-    fetchPaginated,
-    findMovieEndpoint,
-    getRecommendationEndpoint, getUserRatingEndpoint,
-    setRatingEndpoint
-} from "../common/api";
-import {isNumber} from "util";
-
 export interface Genre {
     id: number;
     name: string;
+}
+
+export interface Arg {
+    key: string;
+    value?: string | number | (string | number)[];
 }
 
 export interface ProductionCompany {
@@ -124,30 +120,18 @@ export interface MovieVideoResult {
     results: MovieVideoType[];
 }
 
-export const fetchMovies = (endpoint: string, page: number) => {
-    return fetchPaginated<MovieListResult>(endpoint, page);
+export type MovieType = {
+    id: number;
+    poster_path: string;
+    original_title: string;
+    overview: string;
+    vote_average: number;
+    release_date: number;
+    runtime: number;
+    genre_ids: Array<number>;
 };
 
-export const fetchMovie = (endpoint: string) => {
-    return fetchEndpoint<Movie>(endpoint);
-};
-
-export const fetchMovieVideo = (endpoint: string) => {
-    return fetchEndpoint<MovieVideoResult>(endpoint);
-};
-
-export const findMovieIdByTmdbId = (movieInfo: MovieInfo | undefined) => {
-    return findMovieEndpoint<number[]>(movieInfo);
-};
-
-export const getRecommendation = (tmdbId: number, valueNumber: number) => {
-    return getRecommendationEndpoint<RecommendationInfoType>(tmdbId, valueNumber);
-};
-
-export const setRating = (movieRating: MovieRating | undefined) => {
-    return setRatingEndpoint<string>(movieRating);
-};
-
-export const getUserRating = (movieRating: GeneralMoviePageInfo | undefined) => {
-    return getUserRatingEndpoint<number>(movieRating);
-};
+export type MovieDataType = Omit<
+    MovieType,
+    "overview" | "release_date" | "runtime" | "genre_ids"
+    >;

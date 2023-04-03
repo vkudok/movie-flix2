@@ -1,6 +1,6 @@
 import {NavLink} from "react-router-dom";
 import * as S from "./styles";
-import {RecommendationInfoType} from "../../movies/api";
+import {RecommendationInfoType} from "../../interfaces/interfaces";
 import MovieCardRequest from "../MovieCard/MovieCardRequest";
 import React from "react";
 

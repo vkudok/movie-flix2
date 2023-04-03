@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import {useQuery} from "react-query";
-import {fetchMovie} from "../../movies/api";
+import {fetchMovie} from "../../services/servicesConst";
 
 export default function MovieCardRequest(props: { tmdbId: number }) {
     const tmdbId = props.tmdbId;

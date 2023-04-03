@@ -2,21 +2,24 @@ import * as S from "./styles";
 import {useLocation} from "react-router-dom"
 import {useMutation, useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
-import {
-    fetchMovie, fetchMovieVideo,
-    findMovieIdByTmdbId, GeneralMoviePageInfo,
-    getRecommendation, getUserRating,
+import {GeneralMoviePageInfo,
     MovieInfo,
-    MovieRating,
-    setRating
-} from "../../movies/api";
-import RecomList from "../../components/RecomList";
+    MovieRating
+} from "../../interfaces/interfaces";
+import RecomList from "../../components/RecomList/RecomList";
 import React, {useState} from "react";
 import Rating from '@mui/material/Rating';
-import Header from "../../components/Header";
+import Header from "../../components/Header/Header";
 import {useAuth0} from "@auth0/auth0-react";
 import {StyledTooltip} from "./muiStyles";
 import Video from "../../components/Video/Video";
+import {
+    fetchMovie,
+    fetchMovieVideo,
+    findMovieIdByTmdbId,
+    getRecommendation,
+    getUserRating, setRating
+} from "../../services/servicesConst";
 
 export default function MoviePage() {
     const href = useLocation();
