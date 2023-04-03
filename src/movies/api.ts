@@ -2,7 +2,7 @@ import {
     fetchEndpoint,
     fetchPaginated,
     findMovieEndpoint,
-    getRecommendationEndpoint,
+    getRecommendationEndpoint, getUserRatingEndpoint,
     setRatingEndpoint
 } from "../common/api";
 import {isNumber} from "util";
@@ -80,6 +80,11 @@ export interface MovieRating {
     timestamp: string
 }
 
+export interface GeneralMoviePageInfo {
+    userId: string,
+    movieId: number,
+}
+
 export interface MovieInfo {
     movieInfo: MovieInfoType[];
 }
@@ -141,4 +146,8 @@ export const getRecommendation = (tmdbId: number, valueNumber: number) => {
 
 export const setRating = (movieRating: MovieRating | undefined) => {
     return setRatingEndpoint<string>(movieRating);
+};
+
+export const getUserRating = (movieRating: GeneralMoviePageInfo | undefined) => {
+    return getUserRatingEndpoint<number>(movieRating);
 };

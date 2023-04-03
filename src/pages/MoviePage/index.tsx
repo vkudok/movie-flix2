@@ -5,8 +5,8 @@ import {AiFillStar} from "react-icons/ai";
 import {
     fetchMovie,
     fetchMovies, fetchMovieVideo,
-    findMovieIdByTmdbId,
-    getRecommendation,
+    findMovieIdByTmdbId, GeneralMoviePageInfo,
+    getRecommendation, getUserRating,
     MovieInfo,
     MovieRating,
     setRating
@@ -22,6 +22,11 @@ import Video from "../../components/Video/Video";
 export default function MoviePage() {
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
+    const tmdbId = parseInt(movieId);
+    const valueNumber = 4;
+    const recommendationResult = useQuery(["recommendation", tmdbId, valueNumber],() =>
+        getRecommendation(tmdbId, valueNumber)
+    );
     const endpointMovieCard = `movie/${movieId}`;
     const endpointMovieVideo = `/movie/${movieId}/videos`;
     const movieCardResult = useQuery(["movieCard", endpointMovieCard], () =>
@@ -38,7 +43,6 @@ export default function MoviePage() {
             }
         });
     }
-    console.log(youtubeLink);
     let movieInfo: MovieInfo | undefined;
     if (movieCardResult.data) {
         let genreList = '';
@@ -59,20 +63,37 @@ export default function MoviePage() {
             ]
         }
     }
-    const [value, setValue] = useState<number>(0);
     const movieLensListResult = useQuery(["movieInfo", movieInfo], () =>
             findMovieIdByTmdbId(movieInfo),
         {enabled: !!movieInfo}
     );
-    const tmdbId = parseInt(movieId);
-    const valueNumber = 4;
-    const recommendationResult = useQuery(["recommendation", tmdbId, valueNumber],() =>
-            getRecommendation(tmdbId, valueNumber)
+    const { user, isAuthenticated } = useAuth0();
+    let userId: string[] = [];
+    if(user){
+        userId = user!.sub!.split('|');
+    }
+    const [value, setValue] = useState<number>(0);
+    let moviePageInfo: GeneralMoviePageInfo | undefined;
+    if(movieLensListResult.data && userId.length){
+        moviePageInfo = {
+            userId: userId[1],
+            movieId: movieLensListResult.data[0]
+        }
+    }
+    const userRatingResult = useQuery(["userRating", moviePageInfo],() =>
+            getUserRating(moviePageInfo),
+        {
+            enabled: !!moviePageInfo,
+            onSuccess(data){
+                if(data){
+                    setValue(data);
+                }
+            }
+        }
     );
     const movieRatingResult = useMutation("movieRating", (movieRating: MovieRating) =>
         setRating(movieRating)
     );
-    const { user, isAuthenticated } = useAuth0();
 
     if (movieCardResult.status === "success" && movieCardResult.data) {
         return (
@@ -97,12 +118,11 @@ export default function MoviePage() {
                                          <span>
                                             <Rating
                                                 value={value}
-                                                disabled={!isAuthenticated && (!user)}
+                                                disabled={!isAuthenticated && (!userId.length) && (!userRatingResult)}
                                                 onChange={(event, newValue) => {
                                                     if (newValue === null) {
                                                         newValue = 0;
                                                     }
-                                                    const userId = user!.sub!.split('|');
                                                     setValue(newValue);
                                                     movieRatingResult.mutateAsync({
                                                         userId: userId[1],
