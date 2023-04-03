@@ -4,8 +4,6 @@ import './index.css';
 import App from './App';
 import {BrowserRouter} from "react-router-dom";
 import {GlobalStyle} from "./styles/global";
-import {Provider} from "react-redux";
-import {store} from "./store";
 import {
     QueryClient,
     QueryClientProvider,
@@ -26,12 +24,10 @@ root.render(
         }}
     >
         <QueryClientProvider client={queryClient}>
-            <Provider store={store}>
                 <BrowserRouter>
                     <GlobalStyle/>
                     <App/>
                 </BrowserRouter>
-            </Provider>
         </QueryClientProvider>
     </Auth0Provider>,
 );
