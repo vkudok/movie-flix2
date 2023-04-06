@@ -30,10 +30,11 @@ export const fetchEndpoint = async <T>(
 };
 
 export const findMovieEndpoint = async <T>(
-    movieInfo: MovieInfo | undefined
+    movieInfo: MovieInfo | undefined,
+    endpoint: string
 ): Promise<T> => {
     const response = await fetch(
-        `http://127.0.0.1:8000/findMovieIdByTmdbId`,{
+        `http://127.0.0.1:8000${endpoint}`,{
             method: "post",
             headers: {
                 'Accept': 'application/json',
@@ -119,6 +120,29 @@ export const setRatingEndpoint = async <T>(
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(movieRating)
+        }
+    );
+    const jsonResponse = await response.json();
+    if (response.ok) {
+        return jsonResponse;
+    }
+    if ("status_code" in jsonResponse && "status_message" in jsonResponse) {
+        throw new Error(
+            `${jsonResponse.status_code}: ${jsonResponse.status_message}`
+        );
+    }
+    throw new Error("Something went wrong");
+};
+
+export const getGenreListByIdEndpoint = async <T>(): Promise<T> => {
+    const response = await fetch(
+        `https://api.themoviedb.org/3/genre/movie/list?api_key=181911a338d5119b3964f38af18175e7`,
+        {
+            method: "get",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         }
     );
     const jsonResponse = await response.json();

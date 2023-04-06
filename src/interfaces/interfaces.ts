@@ -85,6 +85,15 @@ export interface MovieInfo {
     movieInfo: MovieInfoType[];
 }
 
+export interface GenreListType {
+    id: number,
+    name: string
+}
+
+export interface GenreList {
+    genres: GenreListType[]
+}
+
 export interface MovieListResult {
     adult: boolean;
     backdrop_path: string | null;

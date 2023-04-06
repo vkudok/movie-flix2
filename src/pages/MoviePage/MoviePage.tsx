@@ -47,6 +47,7 @@ export default function MoviePage() {
     }
     let movieInfo: MovieInfo | undefined;
     if (movieCardResult.data) {
+        console.log(movieCardResult.data);
         let genreList = '';
         movieCardResult.data.genres.forEach((item, index) => {
             let delimeter = '|';
@@ -65,8 +66,9 @@ export default function MoviePage() {
             ]
         }
     }
-    const movieLensListResult = useQuery(["movieInfo", movieInfo], () =>
-            findMovieIdByTmdbId(movieInfo),
+    const movieLensListEndpoint = '/findMovieIdByTmdbId'
+    const movieLensListResult = useQuery(["movieInfo", movieInfo, movieLensListEndpoint], () =>
+            findMovieIdByTmdbId(movieInfo, movieLensListEndpoint),
         {enabled: !!movieInfo}
     );
     const { user, isAuthenticated } = useAuth0();
@@ -120,7 +122,7 @@ export default function MoviePage() {
                                          <span>
                                             <Rating
                                                 value={value}
-                                                disabled={!isAuthenticated && (!userId.length) && (!userRatingResult)}
+                                                disabled={!isAuthenticated && (!userId.length) || (!userRatingResult)}
                                                 onChange={(event, newValue) => {
                                                     if (newValue === null) {
                                                         newValue = 0;

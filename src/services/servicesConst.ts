@@ -1,6 +1,5 @@
-
 import {
-    GeneralMoviePageInfo,
+    GeneralMoviePageInfo, GenreList,
     Movie,
     MovieInfo,
     MovieListResult,
@@ -10,7 +9,7 @@ import {
 import {
     fetchEndpoint,
     fetchPaginated,
-    findMovieEndpoint,
+    findMovieEndpoint, getGenreListByIdEndpoint,
     getRecommendationEndpoint, getUserRatingEndpoint,
     setRatingEndpoint
 } from "./services";
@@ -18,6 +17,10 @@ import {
 
 export const fetchMovies = (endpoint: string, page: number) => {
     return fetchPaginated<MovieListResult>(endpoint, page);
+};
+
+export const getGenreListById = () => {
+    return getGenreListByIdEndpoint<GenreList>();
 };
 
 export const fetchMovie = (endpoint: string) => {
@@ -28,8 +31,8 @@ export const fetchMovieVideo = (endpoint: string) => {
     return fetchEndpoint<MovieVideoResult>(endpoint);
 };
 
-export const findMovieIdByTmdbId = (movieInfo: MovieInfo | undefined) => {
-    return findMovieEndpoint<number[]>(movieInfo);
+export const findMovieIdByTmdbId = (movieInfo: MovieInfo | undefined, endpoint: string) => {
+    return findMovieEndpoint<number[]>(movieInfo, endpoint);
 };
 
 export const getRecommendation = (tmdbId: number, valueNumber: number) => {
