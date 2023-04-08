@@ -2,7 +2,8 @@ import * as S from "./styles";
 import {useLocation} from "react-router-dom"
 import {useMutation, useQuery} from "react-query";
 import {AiFillStar} from "react-icons/ai";
-import {GeneralMoviePageInfo,
+import {
+    GeneralMoviePageInfo,
     MovieInfo,
     MovieRating
 } from "../../interfaces/interfaces";
@@ -20,13 +21,15 @@ import {
     getRecommendation,
     getUserRating, setRating
 } from "../../services/servicesConst";
+import Loading from "../../components/Loading/Loading";
 
 export default function MoviePage() {
     const href = useLocation();
     const movieId = href.pathname.split('/')[2];
     const tmdbId = parseInt(movieId);
     const valueNumber = 4;
-    const recommendationResult = useQuery(["recommendation", tmdbId, valueNumber],() =>
+    const [loading, setLoading] = useState(true);
+    const recommendationResult = useQuery(["recommendation", tmdbId, valueNumber], () =>
         getRecommendation(tmdbId, valueNumber)
     );
     const endpointMovieCard = `movie/${movieId}`;
@@ -38,9 +41,9 @@ export default function MoviePage() {
         fetchMovieVideo(endpointMovieVideo)
     );
     let youtubeLink = '';
-    if(movieVideoResult.data && movieVideoResult.data?.results){
-        movieVideoResult.data?.results.forEach(item=>{
-            if(item.type === 'Trailer'){
+    if (movieVideoResult.data && movieVideoResult.data?.results) {
+        movieVideoResult.data?.results.forEach(item => {
+            if (item.type === 'Trailer') {
                 youtubeLink = `https://www.youtube.com/embed/${item.key}?showinfo=0`;
             }
         });
@@ -69,29 +72,41 @@ export default function MoviePage() {
     const movieLensListEndpoint = '/findMovieIdByTmdbId'
     const movieLensListResult = useQuery(["movieInfo", movieInfo, movieLensListEndpoint], () =>
             findMovieIdByTmdbId(movieInfo, movieLensListEndpoint),
-        {enabled: !!movieInfo}
+        {
+            onSuccess: () => {
+                setLoading(false);
+            },
+            onError: () => {
+                setLoading(true)
+            },
+            enabled: !!movieInfo
+        }
     );
-    const { user, isAuthenticated } = useAuth0();
+    const {user, isAuthenticated} = useAuth0();
     let userId: string[] = [];
-    if(user){
+    if (user) {
         userId = user!.sub!.split('|');
     }
     const [value, setValue] = useState<number>(0);
     let moviePageInfo: GeneralMoviePageInfo | undefined;
-    if(movieLensListResult.data && userId.length){
+    if (movieLensListResult.data && userId.length) {
         moviePageInfo = {
             userId: userId[1],
             movieId: movieLensListResult.data[0]
         }
     }
-    const userRatingResult = useQuery(["userRating", moviePageInfo],() =>
+    const userRatingResult = useQuery(["userRating", moviePageInfo], () =>
             getUserRating(moviePageInfo),
         {
             enabled: !!moviePageInfo,
-            onSuccess(data){
-                if(data){
+            onSuccess(data) {
+                setLoading(false);
+                if (data) {
                     setValue(data);
                 }
+            },
+            onError: () => {
+                setLoading(true)
             }
         }
     );
@@ -103,22 +118,28 @@ export default function MoviePage() {
         return (
             <>
                 <Header></Header>
-                <S.Main>
-                    <S.Details>
-                        <S.MoviePoster
-                            src={`https://image.tmdb.org/t/p/w500${movieCardResult.data?.poster_path}`}
-                            alt={movieCardResult.data?.original_title}
-                        />
-                        <div>
-                            <h4>{movieCardResult.data?.original_title}</h4>
-                            <p>{movieCardResult.data?.overview}</p>
-                            <S.Rate>
-                                <AiFillStar size={24}/>
-                                <span>{movieCardResult.data?.vote_average / 2}</span>
-                            </S.Rate>
-                            {movieLensListResult.data &&
-                                <S.Stars>
-                                    <StyledTooltip title={isAuthenticated ? 'Rate the movie' : 'Log in to rate movie'} placement="bottom">
+                <Loading loading={loading}/>
+                {
+                    !loading &&
+                    <>
+                        <S.Main>
+                            <S.Details>
+                                <S.MoviePoster
+                                    src={`https://image.tmdb.org/t/p/w500${movieCardResult.data?.poster_path}`}
+                                    alt={movieCardResult.data?.original_title}
+                                />
+                                <div>
+                                    <h4>{movieCardResult.data?.original_title}</h4>
+                                    <p>{movieCardResult.data?.overview}</p>
+                                    <S.Rate>
+                                        <AiFillStar size={24}/>
+                                        <span>{movieCardResult.data?.vote_average / 2}</span>
+                                    </S.Rate>
+                                    {movieLensListResult.data &&
+                                    <S.Stars>
+                                        <StyledTooltip
+                                            title={isAuthenticated ? 'Rate the movie' : 'Log in to rate movie'}
+                                            placement="bottom">
                                          <span>
                                             <Rating
                                                 value={value}
@@ -138,36 +159,38 @@ export default function MoviePage() {
                                                 size="large"
                                             />
                                          </span>
-                                    </StyledTooltip>
-                                </S.Stars>
-                            }
-                            <S.TechnicalDetails>
+                                        </StyledTooltip>
+                                    </S.Stars>
+                                    }
+                                    <S.TechnicalDetails>
                                   <span>
                                     Type
                                     <strong>Movie</strong>
                                   </span>
-                                                    <span>
+                                        <span>
                                     Release Date
                                     <strong>{movieCardResult.data?.release_date}</strong>
                                   </span>
-                                                    <span>
+                                        <span>
                                     Run Time
                                     <strong>{movieCardResult.data?.runtime} mins</strong>
                                   </span>
-                                                    <span>
+                                        <span>
                                     Genres
                                     <strong>
                                       {movieCardResult.data?.genres.map(({name}) => name).join(", ")}
                                     </strong>
                                   </span>
-                            </S.TechnicalDetails>
-                        </div>
-                    </S.Details>
-                </S.Main>
-                {youtubeLink !== '' &&
-                    <Video link={youtubeLink}></Video>
+                                    </S.TechnicalDetails>
+                                </div>
+                            </S.Details>
+                        </S.Main>
+                        {youtubeLink !== '' &&
+                        <Video link={youtubeLink}></Video>
+                        }
+                        {recommendationResult.data && <RecomList data={recommendationResult.data}></RecomList>}
+                    </>
                 }
-                {recommendationResult.data && <RecomList data={recommendationResult.data}></RecomList>}
             </>
         );
     }

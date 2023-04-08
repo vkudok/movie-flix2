@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {CSSProperties} from "react";
 
 export const NavigationButton = styled.button<{ disabled: boolean }>`
   width: 15rem;
@@ -25,3 +26,9 @@ export const Navigation = styled.div`
   gap: 2rem;
   padding: 2rem;
 `;
+
+export const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "#ffffff",
+};

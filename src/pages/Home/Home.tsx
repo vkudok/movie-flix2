@@ -6,13 +6,24 @@ import * as S from "./styles";
 import {fetchMovies, findMovieIdByTmdbId, getGenreListById} from "../../services/servicesConst";
 import {MovieInfo} from "../../interfaces/interfaces";
 import {getMovieList} from "./service";
+import Loading from "../../components/Loading/Loading";
 
 export default function Home() {
+    const [loading, setLoading] = useState(true);
+
     const moviesEndpoint = "movie/popular";
 
     const [page, setPage] = useState<number>(1);
     const moviesQueryResult = useQuery(["movie", moviesEndpoint, page], () =>
-        fetchMovies(moviesEndpoint, page)
+            fetchMovies(moviesEndpoint, page),
+        {
+            onSuccess: () => {
+                setLoading(true)
+            },
+            onError: () => {
+                setLoading(false)
+            }
+        }
     );
     const genreListByIdResult = useQuery(["genreLis"], () =>
         getGenreListById()
@@ -20,34 +31,48 @@ export default function Home() {
     let movieListTmdbIds: MovieInfo = {
         movieInfo: []
     };
-    if(moviesQueryResult && moviesQueryResult.data && genreListByIdResult && genreListByIdResult.data){
+    if (moviesQueryResult && moviesQueryResult.data && genreListByIdResult && genreListByIdResult.data) {
         movieListTmdbIds = getMovieList(moviesQueryResult.data.results, genreListByIdResult.data.genres);
     }
     const setNewFilmsEndpoint = '/setNewFilms'
-    const movieLensListResult = useQuery(["setNewFilms", movieListTmdbIds, setNewFilmsEndpoint], () =>
+    useQuery(["setNewFilms", movieListTmdbIds, setNewFilmsEndpoint], () =>
             findMovieIdByTmdbId(movieListTmdbIds, setNewFilmsEndpoint),
-        {enabled: movieListTmdbIds.movieInfo.length>0}
+        {
+            onSuccess: () => {
+                setLoading(false)
+            },
+            onError: () => {
+                setLoading(true)
+            },
+            enabled: movieListTmdbIds.movieInfo.length > 0
+        }
     );
     return (
         <>
             <Header></Header>
-            {(moviesQueryResult && moviesQueryResult.data) &&
-                <MovieList movies={moviesQueryResult.data.results}></MovieList>
+            <Loading loading={loading}/>
+            {
+                !loading &&
+                <>
+                    {(moviesQueryResult && moviesQueryResult.data) &&
+                    <MovieList movies={moviesQueryResult.data.results}></MovieList>
+                    }
+                    <S.Navigation>
+                        <S.NavigationButton
+                            onClick={() => setPage((prevPage) => prevPage - 1)}
+                            disabled={page === 1 ? true : false}
+                        >
+                            Prev Page
+                        </S.NavigationButton>
+                        <S.NavigationButton
+                            onClick={() => setPage((prevPage) => prevPage + 1)}
+                            disabled={false}
+                        >
+                            Next Page
+                        </S.NavigationButton>
+                    </S.Navigation>
+                </>
             }
-            <S.Navigation>
-                <S.NavigationButton
-                    onClick={() => setPage((prevPage) => prevPage - 1)}
-                    disabled={page === 1 ? true : false}
-                >
-                    Prev Page
-                </S.NavigationButton>
-                <S.NavigationButton
-                    onClick={() => setPage((prevPage) => prevPage + 1)}
-                    disabled={false}
-                >
-                    Next Page
-                </S.NavigationButton>
-            </S.Navigation>
         </>
     );
 }
